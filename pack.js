@@ -31,6 +31,34 @@ function getAllFiles(dirPath, basePath = "") {
 	return files;
 }
 
+// Comments out any active LogChannel(...) calls in Logging.reds files so a release
+// build never ships with debug logging left on. Returns the list of files it changed.
+function disableLogging(files) {
+	const changed = [];
+	for (const relPath of files) {
+		if (path.basename(relPath) !== "Logging.reds") {
+			continue;
+		}
+		const content = fs.readFileSync(relPath, "utf8");
+		const updated = content
+			.split("\n")
+			.map((line) => {
+				const trimmed = line.trimStart();
+				if (trimmed.startsWith("LogChannel(")) {
+					const indent = line.slice(0, line.length - trimmed.length);
+					return `${indent}// ${trimmed}`;
+				}
+				return line;
+			})
+			.join("\n");
+		if (updated !== content) {
+			fs.writeFileSync(relPath, updated);
+			changed.push(relPath);
+		}
+	}
+	return changed;
+}
+
 async function pack() {
 	try {
 		console.log("Starting pack process...");
@@ -46,6 +74,12 @@ async function pack() {
 		// Get all files to include
 		console.log("Scanning files...");
 		const files = getAllFiles(SOURCE_R6_FOLDER, "r6");
+
+		// Always disable logging before packing a release build.
+		const loggingFilesDisabled = disableLogging(files);
+		if (loggingFilesDisabled.length > 0) {
+			console.log(`Disabled active logging in: ${loggingFilesDisabled.join(", ")}`);
+		}
 		console.log(`Found ${files.length} files to pack`);
 
 		// Create zip using 7zip
