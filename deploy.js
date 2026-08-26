@@ -42,7 +42,7 @@ async function deploy() {
 		console.log(`Source folder: ${SOURCE_R6_FOLDER}`);
 
 		// Delete target directory
-		const scriptsTarget = path.join(DEPLOYMENT_TARGET, "r6", "scripts", "ragdoll_gravity_helper");
+		const scriptsTarget = path.join(DEPLOYMENT_TARGET, "r6", "scripts", "Reduced Ragdoll Force");
 
 		console.log("\n--- Deleting existing files ---");
 		deleteDirectory(scriptsTarget);

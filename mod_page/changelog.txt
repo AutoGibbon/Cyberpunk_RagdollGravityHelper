@@ -1,2 +1,5 @@
+2.0.0
+Add continuous downward force on ragdolling NPCs for a short time, to hopefully reduce the ugliness of vanilla floaty ragdoll. Might still be jank sometimes.
+
 1.0.0
-- Initial release: continuous per-frame downward force on ragdolling NPCs, replacing vanilla's floaty ragdoll fall with a believable one. Two settings (enabled, force strength) via redscript mod settings.
+HI THERE
